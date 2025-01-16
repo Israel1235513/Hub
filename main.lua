@@ -45,15 +45,16 @@ do
         end
     })
 local JumpType = Player.Main:AddDropdown("JumpType", {
-    Title = "Tipo de Pulo",
-    Options = {"JumpHeight", "JumpPower"},
-    Default = 1,  -- Default para "JumpPower"
+Title = "Tipo do Pulo",
+Values = {"JumpHeight", "JumpPower"},
+Multi = false,
+Default = 1,
     Callback = function(value)
         selectedJumpType = value
     end
 })
 
-local JumpSlider = Player.Main:AddSlider("Jump", {
+local Jump = Player.Main:AddSlider("Jump", {
     Title = "Pulo",
     Description = "Ajuste a altura/poder do pulo.",
     Default = 50,
