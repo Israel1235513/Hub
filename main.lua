@@ -135,6 +135,10 @@ local Fly = Player.Main:AddToggle("Fly", {
     Default = false
 })
 
+Fly:OnChanged(function(value)
+  print("Teste")
+end)
+	
 end
 
 SaveManager:SetLibrary(Fluent)
