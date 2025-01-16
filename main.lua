@@ -80,11 +80,7 @@ end
 -- Função para liberar movimento quando a tecla for solta
 local function onKeyRelease(input)
     if flying then
-        if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.LeftControl then
-            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-        elseif input.KeyCode == Enum.KeyCode.W or input.KeyCode == Enum.KeyCode.A or input.KeyCode == Enum.KeyCode.S or input.KeyCode == Enum.KeyCode.D then
-            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-        end
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
     end
 end
 
