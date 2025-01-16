@@ -118,6 +118,7 @@ Invisibilidade:OnChanged(function(value)
         if table.find(bodyParts, obj.Name) or obj:FindFirstChild("Handle") then
             local target = obj:FindFirstChild("Handle") or obj
             target.Transparency = value and 1 or 0
+		target.CanCollide = true
             if obj.Name == "Head" and obj:FindFirstChild("face") then
                 obj.face.Transparency = value and 1 or 0
             end
