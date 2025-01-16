@@ -7,91 +7,38 @@ local humanoid = character:WaitForChild("Humanoid")
 local camera = game.Workspace.CurrentCamera
 
 local Window = Fluent:CreateWindow({
-    Title = "Friend Hub",
-    SubTitle = "by zenitsu",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+    Title = "Friend Hub", SubTitle = "by zenitsu", TabWidth = 160, Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, Theme = "Dark", MinimizeKey = Enum.KeyCode.LeftControl
 })
 
-local Player = {
-    Main = Window:AddTab({ Title = "Player", Icon = "player" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
-}
+local Player = { Main = Window:AddTab({ Title = "Player", Icon = "player" }), Settings = Window:AddTab({ Title = "Settings", Icon = "settings" }) }
 
--- Fly Toggle Button
-local Fly = Player.Main:AddToggle("Fly", {
-    Title = "Fly",
-    Default = false
-})
+local Fly = Player.Main:AddToggle("Fly", { Title = "Fly", Default = false })
+local flying, bodyVelocity = false, Instance.new("BodyVelocity")
+bodyVelocity.MaxForce, bodyVelocity.Velocity = Vector3.new(100000, 100000, 100000), Vector3.new(0, 0, 0)
 
-local flying = false
-local bodyVelocity = Instance.new("BodyVelocity")
-bodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
-bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+local function startFlying() if not flying then flying = true humanoid.PlatformStand = true bodyVelocity.Parent = character:WaitForChild("HumanoidRootPart") end end
+local function stopFlying() if flying then flying = false humanoid.PlatformStand = false bodyVelocity.Parent = nil end end
 
--- Função para iniciar o voo
-local function startFlying()
-    if not flying then
-        flying = true
-        humanoid.PlatformStand = true
-        bodyVelocity.Parent = character:WaitForChild("HumanoidRootPart")
-    end
-end
+Fly:OnChanged(function(value) if value then startFlying() else stopFlying() end end)
 
--- Função para parar o voo
-local function stopFlying()
+game:GetService("UserInputService").InputBegan:Connect(function(input)
     if flying then
-        flying = false
-        humanoid.PlatformStand = false
-        bodyVelocity.Parent = nil
-    end
-end
-
-Fly:OnChanged(function(value)
-    if value then
-        startFlying()
-    else
-        stopFlying()
+        if input.KeyCode == Enum.KeyCode.Space then bodyVelocity.Velocity = Vector3.new(0, 20, 0)
+        elseif input.KeyCode == Enum.KeyCode.LeftControl then bodyVelocity.Velocity = Vector3.new(0, -10, 0)
+        elseif input.KeyCode == Enum.KeyCode.W then bodyVelocity.Velocity = camera.CFrame.LookVector * 50
+        elseif input.KeyCode == Enum.KeyCode.A then bodyVelocity.Velocity = -camera.CFrame.RightVector * 50
+        elseif input.KeyCode == Enum.KeyCode.S then bodyVelocity.Velocity = -camera.CFrame.LookVector * 50
+        elseif input.KeyCode == Enum.KeyCode.D then bodyVelocity.Velocity = camera.CFrame.RightVector * 50 end
     end
 end)
 
--- Movimento controlado pelas teclas WASD, Shift (subir), Ctrl (descer)
-local function onKeyPress(input)
-    if flying then
-        if input.KeyCode == Enum.KeyCode.Space then
-            bodyVelocity.Velocity = Vector3.new(0, 20, 0)
-        elseif input.KeyCode == Enum.KeyCode.LeftControl then
-            bodyVelocity.Velocity = Vector3.new(0, -10, 0)
-        elseif input.KeyCode == Enum.KeyCode.W then
-            bodyVelocity.Velocity = camera.CFrame.LookVector * 50
-        elseif input.KeyCode == Enum.KeyCode.A then
-            bodyVelocity.Velocity = -camera.CFrame.RightVector * 50
-        elseif input.KeyCode == Enum.KeyCode.S then
-            bodyVelocity.Velocity = -camera.CFrame.LookVector * 50
-        elseif input.KeyCode == Enum.KeyCode.D then
-            bodyVelocity.Velocity = camera.CFrame.RightVector * 50
-        end
-    end
-end
+game:GetService("UserInputService").InputEnded:Connect(function(input)
+    if flying then bodyVelocity.Velocity = Vector3.new(0, 0, 0) end
+end)
 
--- Função para liberar movimento quando a tecla for solta
-local function onKeyRelease(input)
-    if flying then
-        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-    end
-end
-
--- Conectar funções de pressionamento de teclas
-game:GetService("UserInputService").InputBegan:Connect(onKeyPress)
-game:GetService("UserInputService").InputEnded:Connect(onKeyRelease)
-
--- SaveManager e InterfaceManager
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
-
 SaveManager:IgnoreThemeSettings()
 SaveManager:SetIgnoreIndexes({})
 InterfaceManager:SetFolder("FluentScriptHub")
