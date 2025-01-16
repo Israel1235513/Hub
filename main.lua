@@ -130,6 +130,10 @@ Invisibilidade:OnChanged(function(value)
     end
 end)
 
+local Fly = Player.Main:AddToggle("Fly", {
+    Title = "Fly",
+    Default = false
+})
 
 end
 
