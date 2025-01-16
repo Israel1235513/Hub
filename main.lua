@@ -98,6 +98,14 @@ local Jump = Player.Main:AddSlider("Jump", {
         end
 	})
 
+local Sit = Player.Main:AddButton({
+        Title = "Sit",
+        Description = "Você senta.",
+        Callback = function()
+            game.Players.LocalPlayer.Character.Humanoid.Sit = True
+        end
+    })
+
 local Invisibilidade = Player.Main:AddToggle("Invisible", {
     Title = "Invisibilidade",
     Default = false
