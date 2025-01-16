@@ -133,14 +133,6 @@ local bodyVelocity = Instance.new("BodyVelocity")
 bodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
 bodyVelocity.Velocity = Vector3.new(0, 0, 0)
 
-Fly:OnChanged(function(value)
-    if value then
-        startFlying()
-    else
-        stopFlying()
-    end
-end)
-
 -- Função para iniciar o voo
 local function startFlying()
     if flying then return end
@@ -156,6 +148,14 @@ local function stopFlying()
     humanoid.PlatformStand = false
     bodyVelocity.Parent = nil
 end
+
+Fly:OnChanged(function(value)
+    if value then
+        startFlying()
+    else
+        stopFlying()
+    end
+end)
 
 -- Movimento controlado pelas teclas WASD, Shift (subir), Ctrl (descer)
 local function onKeyPress(input)
