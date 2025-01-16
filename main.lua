@@ -44,17 +44,21 @@ do
             game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
         end
     })
-	local Jump = Player.Main:AddSlider("Jump", {
-        Title = "Jump",
-        Description = "Aumenta seu pulo.",
-        Default = 2,
-        Min = 7.2,
-        Max = 512,
-        Rounding = 1,
-        Callback = function(Value)
-            game.Players.LocalPlayer.Character.Humanoid.JumpHeight = Value
+local Jump = Player.Main:AddSlider("Jump", {
+    Title = "Jump",
+    Description = "Aumenta seu pulo.",
+    Default = 50,  -- Valor de pulo padrão ajustado
+    Min = 7.2,
+    Max = 512,
+    Rounding = 1,
+    Callback = function(Value)
+        local character = game.Players.LocalPlayer.Character
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.JumpHeight = Value
         end
-    })
+    end
+})
+
 
 	local Leave = Player.Main:AddButton({
         Title = "Leave",
