@@ -55,6 +55,7 @@ local Jump = Player.Main:AddSlider("Jump", {
         local character = game.Players.LocalPlayer.Character
         if character and character:FindFirstChild("Humanoid") then
             character.Humanoid.JumpHeight = Value
+	character.Humanoid.JumpPower = Value
         end
     end
 })
