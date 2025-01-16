@@ -44,21 +44,35 @@ do
             game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
         end
     })
-local Jump = Player.Main:AddSlider("Jump", {
-    Title = "Jump",
-    Description = "Aumenta seu pulo.",
-    Default = 50,  -- Valor de pulo padrão ajustado
+local JumpType = Player.Main:AddDropdown("JumpType", {
+    Title = "Tipo de Pulo",
+    Options = {"JumpHeight", "JumpPower"},
+    Default = 1,  -- Default para "JumpPower"
+    Callback = function(value)
+        selectedJumpType = value
+    end
+})
+
+local JumpSlider = Player.Main:AddSlider("Jump", {
+    Title = "Pulo",
+    Description = "Ajuste a altura/poder do pulo.",
+    Default = 50,
     Min = 7.2,
     Max = 512,
     Rounding = 1,
-    Callback = function(Value)
+    Callback = function(value)
         local character = game.Players.LocalPlayer.Character
         if character and character:FindFirstChild("Humanoid") then
-            character.Humanoid.JumpHeight = Value
-	character.Humanoid.JumpPower = Value
+            local humanoid = character.Humanoid
+            if selectedJumpType == "JumpHeight" then
+                humanoid.JumpHeight = value
+            else
+                humanoid.JumpPower = value
+            end
         end
     end
 })
+
 
 
 	local Leave = Player.Main:AddButton({
