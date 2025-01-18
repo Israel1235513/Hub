@@ -5,6 +5,7 @@ local user = game.Players.LocalPlayer
 local character = user.Character or user.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local camera = game.Workspace.CurrentCamera
+local Lighting = game:GetService("Lighting")
 
 local Window = Fluent:CreateWindow({
     Title = "Friend Hub",
@@ -134,6 +135,40 @@ do
             end
         end
     end)
+
+    local Brightness = Player.Main:AddSlider("Brightness", {
+        Title = "Luz",
+        Description = "Aumenta sua visão da luz.",
+        Default = 16,
+        Min = 16,
+        Max = 512,
+        Rounding = 1,
+        Callback = function(Value)
+            Lighting.Brightness = Value
+        end
+    })
+
+	local NoFog = Player.Main:AddToggle("NoFog", {
+		Title = "No Fog",
+		Default = false
+	})
+
+	function nofog()
+		Lighting.FogEnd = 100000
+		for i,v in pairs(Lighting:GetDescendants()) do
+			if v:IsA("Atmosphere") then
+				v:Destroy()
+			end
+		end
+	end
+
+	NoFog:OnChanged(function()
+	    if NoFog.Value then
+			nofog(true)
+		else
+			nofog(false)
+		end
+	end)
 
 local GodMode = Player.Main:AddToggle("GodMode", {
     Title = "God Mode",
