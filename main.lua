@@ -99,7 +99,7 @@ do
         Title = "Sit",
         Description = "Você senta.",
         Callback = function()
-            game.Players.LocalPlayer.Character.Humanoid.Sit = True
+            game.Players.LocalPlayer.Character.Humanoid.Sit = true
         end
     })
 
@@ -135,7 +135,118 @@ do
         end
     end)
 
-    -- Fly Toggle
+local GodMode = Player.Main:AddToggle("GodMode", {
+    Title = "God Mode",
+    Default = false
+})
+
+-- Função para aplicar o efeito do God Mode
+local function applyGodModeEffect(isEnabled)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    while task.wait() do
+        if not GodMode.Value then break end -- Sai do loop se God Mode estiver desativado
+
+        local parts = workspace:GetPartBoundsInRadius(humanoidRootPart.Position, 10)
+        for _, part in ipairs(parts) do
+            if part:IsA("BasePart") then
+                part.CanTouch = not GodMode.Value -- Desativa interações de toque se God Mode estiver ativo
+            end
+        end
+    end
+end
+
+-- Listener para ativar/desativar o God Mode
+GodMode:OnChanged(function()
+    if GodMode.Value then
+        applyGodModeEffect(true)
+    else
+        applyGodModeEffect(false)
+    end
+end)
+
+-- ... Código anterior...
+
+local Noclip = Player.Main:AddToggle("Noclip", {
+    Title = "NoClip",
+    Default = false
+})
+
+-- Função simples para gerar uma string aleatória, se necessário
+function randomString()
+    local length = 10
+    local chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    local result = ""
+    for i = 1, length do
+        result = result .. chars:sub(math.random(1, #chars), math.random(1, #chars))
+    end
+    return result
+end
+
+-- Função noclip para atravessar paredes sem rotação
+-- Função noclip para atravessar paredes sem rotação
+-- Função noclip para atravessar paredes sem rotação
+-- Função noclip para atravessar paredes sem rotação
+local function noclip(enable)
+    wait(0.1)
+    
+    local character = game.Players.LocalPlayer.Character
+    if not character then return end
+
+    local Char = character:GetChildren()
+
+    if enable then
+        -- Ativa o Noclip
+        for i, v in next, Char do
+            if v:IsA("BasePart") then
+                v.CanCollide = false  -- Desativa a colisão com objetos do mundo
+                -- Não mexemos no Massless para evitar a lentidão
+                v.Velocity = Vector3.new(0, 0, 0)  -- Garante que o personagem não tenha movimento residual
+            end
+        end
+    else
+        -- Desativa o Noclip
+        for i, v in next, Char do
+            if v:IsA("BasePart") then
+                v.CanCollide = true  -- Restaura a colisão
+                -- Não mexemos no Massless para restaurar a física do personagem
+                v.Velocity = Vector3.new(0, 0, 0)  -- Garante que o personagem não tenha movimento residual
+            end
+        end
+    end
+end
+
+-- Função para monitorar o estado do humanoide e garantir que o Noclip continue ativo
+local function maintainNoclipWhileEnabled()
+    local character = game.Players.LocalPlayer.Character
+    if not character then return end
+
+    local humanoid = character:WaitForChild("Humanoid")
+    
+    -- Monitora qualquer mudança no estado do humanoide para reaplicar o Noclip, se necessário
+    humanoid.Changed:Connect(function()
+        if Noclip.Value then
+            noclip(true)  -- Reaplica o Noclip se o toggle estiver ativado
+        end
+    end)
+end
+
+-- Monitorando a alteração do valor do Noclip
+Noclip:OnChanged(function()
+    if Noclip.Value then
+        noclip(true)  -- Ativa o Noclip (atravessar paredes)
+        maintainNoclipWhileEnabled()  -- Garante que o Noclip continue ativo enquanto o toggle estiver ativado
+    else
+        noclip(false)  -- Desativa o Noclip (volta à física normal)
+    end
+end)
+
+
+
+
+
     local Fly = Player.Main:AddToggle("Fly", {
         Title = "Fly",
         Default = false
@@ -148,6 +259,7 @@ do
     local function startFly()
         if not flying then
             flying = true
+			game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
             local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
             local humanoid = character:WaitForChild("Humanoid")
             -- Criar BodyVelocity para voo
@@ -183,6 +295,7 @@ do
     local function stopFly()
         if flying then
             flying = false
+			game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
             if bodyVelocity then bodyVelocity:Destroy() end
             if bodyGyro then bodyGyro:Destroy() end
         end
